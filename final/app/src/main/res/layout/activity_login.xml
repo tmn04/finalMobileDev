@@ -39,21 +39,21 @@
 
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:id = "@+id/username"
+            android:id = "@+id/log_username"
             android:hint="Username"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
 
             <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_width="368dp"
+                android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
 
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:id = "@+id/password"
+        android:id = "@+id/log_password"
         android:hint="Password"
             app:passwordToggleEnabled="true"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -81,18 +81,20 @@
         android:layout_height="wrap_content"
         android:background="#FEA899"
         android:text="Go"
+        android:id="@+id/validate_login"
         android:textColor="#70D0C6"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp" />
 
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="367dp"
+        android:id="@+id/signup_screen"
         android:layout_height="wrap_content"
-        android:background="#FEA899"
-        android:text="New member? Sign up here"
-        android:textColor="#000"
-        android:layout_margin="5dp"
         android:layout_gravity="right"
-        android:elevation="0dp" />
+        android:layout_margin="5dp"
+        android:background="#FEA899"
+        android:elevation="0dp"
+        android:text="New member? Sign up here"
+        android:textColor="#000" />
 
 </LinearLayout>

@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -30,26 +31,22 @@ public class SignUp extends AppCompatActivity {
         regEmail = findViewById(R.id.reg_email);
         regPhoneNo = findViewById(R.id.reg_phoneNo);
         regPassword = findViewById(R.id.reg_password);
-        regBtn = findViewById(R.id.reg_btn);
         regToLoginBtn = findViewById(R.id.reg_login_btn);
+        regToLoginBtn.setOnClickListener((view)->{
+            Intent intent =  new Intent(SignUp.this, Login.class);
+            startActivity(intent);
+        });
 
+        regBtn = findViewById(R.id.reg_btn);
         regBtn.setOnClickListener(new View.OnClickListener(){
 
 
             @Override
             public void onClick(View view) {
-                rootNode = FirebaseDatabase.getInstance();
-                reference = rootNode.getReference("users");
 
-                String name = regName.getEditText().getText().toString();
-                String username = regUsername.getEditText().getText().toString();
-                String email = regEmail.getEditText().getText().toString();
-                String phoneNo = regPhoneNo.getEditText().getText().toString();
-                String password = regPassword.getEditText().getText().toString();
-
-                UserHelperClass helperClass = new UserHelperClass(name, username, email, phoneNo, password);
-                reference.child(username).setValue(helperClass);
+                registerUser(view);
             }
+
         });
     }
 
@@ -74,41 +71,41 @@ public class SignUp extends AppCompatActivity {
         String noWhiteSpace ="(?=\\S+$)";
         if(val.isEmpty())
         {
-            regName.setError("Field cannot be empty");
+            regUsername.setError("Field cannot be empty");
             return false;
         }
         else if (val.length()>=15){
-            regName.setError("Username too long");
+            regUsername.setError("Username too long");
             return false;
         }
-        else if (!val.matches(noWhiteSpace))
+        else if (val.matches(noWhiteSpace))
         {
-            regName.setError("White Spaces are not allowed");
+            regUsername.setError("White Spaces are not allowed");
             return false;
         }
         else
         {
-            regName.setError(null);
+            regUsername.setError(null);
             return true;
         }
     }
 
     private Boolean validateEmail()
     {
-        String val = regName.getEditText().getText().toString();
+        String val = regEmail.getEditText().getText().toString();
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         if(val.isEmpty()) {
-            regName.setError("Field cannot be empty");
+            regEmail.setError("Field cannot be empty");
             return false;
         }
         else if (!val.matches(emailPattern))
         {
-            regName.setError("Invalid email");
+            regEmail.setError("Invalid email");
             return false;
         }
         else
         {
-            regName.setError(null);
+            regEmail.setError(null);
             return true;
         }
 
@@ -118,14 +115,20 @@ public class SignUp extends AppCompatActivity {
         if (!validateEmail() | !validateName() | !validateUsername()) {
             return;
         }
+
         String name = regName.getEditText().getText().toString();
         String username = regUsername.getEditText().getText().toString();
         String email = regEmail.getEditText().getText().toString();
         String phoneNo = regPhoneNo.getEditText().getText().toString();
         String password = regPassword.getEditText().getText().toString();
 
+        rootNode = FirebaseDatabase.getInstance();
+        reference = rootNode.getReference("users");
+
         UserHelperClass helperClass = new UserHelperClass(name, username, email, phoneNo, password);
         reference.child(username).setValue(helperClass);
 
+        Intent intent =  new Intent(SignUp.this, Dashboard.class);
+        startActivity(intent);
     }
 }

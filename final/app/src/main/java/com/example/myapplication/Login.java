@@ -32,11 +32,22 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         callSignUp = findViewById(R.id.signup_screen);
-        callSignUp.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
+        login_btn = findViewById(R.id.validate_login);
+
+        username = findViewById(R.id.log_username);
+        password = findViewById(R.id.log_password);
+
+        callSignUp.setOnClickListener((view) -> {
                 Intent intent =  new Intent(Login.this, SignUp.class);
                 startActivity(intent);
+        });
+
+        login_btn.setOnClickListener(new View.OnClickListener(){
+
+
+            @Override
+            public void onClick(View view) {
+                LoginUser(view);
             }
         });
     }
@@ -44,43 +55,48 @@ public class Login extends AppCompatActivity {
     private Boolean validateUsername()
     {
         String val = username.getEditText().getText().toString();
-        String noWhiteSpace ="(?=\\S+$)";
         if(val.isEmpty())
         {
             username.setError("Field cannot be empty");
             return false;
         }
-        else if (val.length()>=15){
-            username.setError("Username too long");
-            return false;
-        }
-        else if (!val.matches(noWhiteSpace))
+        else
         {
-            username.setError("White Spaces are not allowed");
+            username.setError(null);
+            username.setErrorEnabled(false);
+            return true;
+        }
+    }
+
+    private Boolean validatePassword()
+    {
+        String val = password.getEditText().getText().toString();
+        if(val.isEmpty())
+        {
+            password.setError("Field cannot be empty");
             return false;
         }
         else
         {
-            username.setError(null);
+            password.setError(null);
+            password.setErrorEnabled(false);
             return true;
         }
     }
     public void LoginUser(View view)
     {
-        if (!validateUsername())
+        if (validateUsername() | validatePassword())
         {
-            return;
+            isUser(view);
         }
-        else{ isUser();}
     }
 
-    private void isUser() {
+    private void isUser(View view) {
 
-        String userEnteredUsername= username.getEditText().getText().toString().trim();
-        String userEnteredPassword= password.getEditText().getText().toString().trim();
+        final String userEnteredUsername= username.getEditText().getText().toString().trim();
+        final String userEnteredPassword= password.getEditText().getText().toString().trim();
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
-
         Query checkUser = reference.orderByChild("username").equalTo(userEnteredUsername);
 
         checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -92,13 +108,17 @@ public class Login extends AppCompatActivity {
                     String passFromDB = dataSnapshot.child(userEnteredUsername).child("password").getValue(String.class);
 
                     if (passFromDB.equals(userEnteredPassword)) {
+
+                        username.setError(null);
+                        username.setErrorEnabled(false);
+
                         String nameFromDB = dataSnapshot.child(userEnteredUsername).child("name").getValue(String.class);
                         String usernameFromDB = dataSnapshot.child(userEnteredUsername).child("username").getValue(String.class);
                         String phoneNoFromDB = dataSnapshot.child(userEnteredUsername).child("phoneNo").getValue(String.class);
                         String emailFromDB = dataSnapshot.child(userEnteredUsername).child("email").getValue(String.class);
 
 
-                        Intent intent =  new Intent(getApplicationContext(),UserProfile.class);
+                        Intent intent =  new Intent(getApplicationContext(),Dashboard.class);
 
 
                         intent.putExtra("name", nameFromDB);
@@ -124,14 +144,9 @@ public class Login extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }
 
-    public void callSignUpScreen(View view)
-    {
-        Intent intent =  new Intent(Login.this, SignUp.class);
-        startActivity(intent);
-    }
+
 }
